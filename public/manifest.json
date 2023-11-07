@@ -7,11 +7,18 @@
     "service_worker": "background.js"
   },
   "permissions": [
+    "https://news.kbs.co.kr/news/pc/view/view.do?ncd=7810836",
     "storage",
     "activeTab",
     "scripting"
   ],
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "content_scripts": [
+    {
+        "matches": ["https://news.kbs.co.kr/news/pc/view/view.do?ncd=7810836"], 
+        "js": ["content.js"]
+    }
+]
 }
