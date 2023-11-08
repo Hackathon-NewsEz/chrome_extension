@@ -4,6 +4,18 @@ fetch('http://localhost:3000/difficulty_testing')
         console.log(data);
         var sentence = data.difficult;
         var paragraphs = document.body.getElementsByTagName('p'); // 문장이 포함되어 있을 것으로 예상되는 태그를 선택
+
+
+        // chrome.runtime.sendMessage(
+        // {
+        //     action: "sendData",
+        //     dataParagraph
+        // },
+        // (response) => {
+        //     console.log(response.res);
+        // }
+        // );
+        
         for (var i = 0; i < paragraphs.length; i++) {
             if (paragraphs[i].textContent.includes(sentence)) { // 해당 태그의 텍스트에 문장이 포함되어 있는지 확인
                 var originalText = paragraphs[i].textContent;
