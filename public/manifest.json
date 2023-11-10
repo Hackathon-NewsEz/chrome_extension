@@ -13,14 +13,16 @@
     "storage",
     "activeTab",
     "scripting",
-    "tabs"
+    "tabs",
+    "notifications"
   ],
   "action": {
     "default_popup": "index.html"
   },
   "content_scripts": [
     {
-        "matches": ["https://news.kbs.co.kr/news/pc/view/view.do?ncd=7810836"], 
+        "matches": ["https://news.kbs.co.kr/news/pc/view/*", 
+                    "https://n.news.naver.com/*"],
         "js": ["Content.js"]
     }
 ]
