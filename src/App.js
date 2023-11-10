@@ -1,7 +1,4 @@
-import logo from './logo.svg';
-import './App.css';
-
-import WordsPopup from './Components/WordsPopup';
+import WordsPopup from './Popup/WordsPopup';
 function App() {
   
   return (
