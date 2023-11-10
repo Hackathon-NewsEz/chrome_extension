@@ -1,5 +1,8 @@
-let popupVisible = false; // 팝업이 초기에는 보이지 않도록 설정
-let activePopup = null; // 활성 팝업을 추적하기 위한 변수
+//Content Script 파일로, 페이지의 DOM에 접근 가능 
+
+// 현재 페이지의 URL 확인
+const currentURL = window.location.href;
+console.log(currentURL);
 
 fetch('http://localhost:4000/difficulty_testing')
   .then(response => response.json())
@@ -16,9 +19,16 @@ fetch('http://localhost:4000/difficulty_testing')
         paragraphs[i].addEventListener('click', () => handleSentenceClick(data.easy)); // data.easy 전달
       }
     }
+
+     // 데이터를 성공적으로 변환했다면 background script로 메시지 전송
+     chrome.runtime.sendMessage({type: 'dataReceived', message: '성공'});
+
+
   })
   .catch(error => console.error(error));
 
+let popupVisible = false; // 팝업이 초기에는 보이지 않도록 설정
+let activePopup = null; // 활성 팝업을 추적하기 위한 변수
 
 
 function handleSentenceClick(easyData) {
@@ -68,6 +78,10 @@ function handleSentenceClick(easyData) {
     popupVisible = true;
     activePopup = layout;
   }
+}
+
+function notify(){
+
 }
 
 
