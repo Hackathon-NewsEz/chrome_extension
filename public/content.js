@@ -33,6 +33,7 @@ function replaceSentence(data) {
     var originalHTML = paragraph.innerHTML;
 
     if (originalHTML.includes(data[j].difficult)) {
+      //정규식으로 br 태그해결
       var highlightedHTML = originalHTML.replace(new RegExp(escapeRegExp(data[j].difficult), 'g'), '<span style="background-color: yellow;">$&</span>');
       paragraph.innerHTML = highlightedHTML;
 
