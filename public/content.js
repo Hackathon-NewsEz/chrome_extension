@@ -34,8 +34,15 @@ function replaceSentence(data) {
   var originalHTML = article.innerHTML;
   var originalText = article.innerText;
 
+<<<<<<< HEAD
   console.log(originalText);
   console.log(originalHTML);
+=======
+    if (originalHTML.includes(data[j].difficult)) {
+      //정규식으로 br태그 제거문제 해결 
+      var highlightedHTML = originalHTML.replace(new RegExp(escapeRegExp(data[j].difficult), 'g'), '<span style="background-color: yellow;">$&</span>');
+      paragraph.innerHTML = highlightedHTML;
+>>>>>>> 16dd844 (정규식으로 br태그 문제 해결)
 
   for (var i = 0; i < data.length; i++) {
     var index = originalText.indexOf(data[i].difficult);
