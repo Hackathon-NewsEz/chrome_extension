@@ -4,20 +4,23 @@
 const currentURL = window.location.href;
 console.log(currentURL);
 
-fetch('http://localhost:4000/difficulty_testing')
+fetch('http://localhost:4000/key_testing')
+.then(response => response.json())
+.then(data => {
+  
+  replaceKeySentence(data);
+  
+  fetch('http://localhost:4000/difficulty_testing')
   .then(response => response.json())
   .then(data => {
-    console.log(data);
- 
+
     replaceSentence(data);
-   
-     // 데이터를 성공적으로 변환했다면 background script로 메시지 전송
-     chrome.runtime.sendMessage({type: 'dataReceived', message: '성공'});
-
-
+    // 데이터를 성공적으로 변환했다면 background script로 메시지 전송
+    chrome.runtime.sendMessage({type: 'dataReceived', message: '성공'});
   })
   .catch(error => console.error(error));
-
+})
+.catch(error => console.error(error));
 
 
 let popupVisible = false; // 팝업이 초기에는 보이지 않도록 설정
@@ -25,6 +28,8 @@ let activePopup = null; // 활성 팝업을 추적하기 위한 변수
 
 
 function replaceSentence(data) {
+  console.log("Go");
+
   for (var j = 0; j < data.length; j++) {
   var paragraphs = document.body.getElementsByTagName('p');
 
@@ -33,13 +38,32 @@ function replaceSentence(data) {
     var originalHTML = paragraph.innerHTML;
 
     if (originalHTML.includes(data[j].difficult)) {
-      var highlightedHTML = originalHTML.replace(new RegExp(escapeRegExp(data[j].difficult), 'g'), '<span style="background-color: yellow;">$&</span>');
+      var highlightedHTML = originalHTML.replace(new RegExp(escapeRegExp(data[j].difficult), 'g'), `<span index=${j} style="background-color: #FCF779; cursor: pointer; ">$&</span>`);
       paragraph.innerHTML = highlightedHTML;
 
       var highlightedSpans = paragraph.getElementsByTagName('span');
       for (var l = 0; l < highlightedSpans.length; l++) {
-        highlightedSpans[l].addEventListener('click', createClickHandler(data[l].easy));
+        var index = highlightedSpans[l].getAttribute('index');
+        highlightedSpans[l].addEventListener('click', createClickHandler(data[index].easy));
       }
+    }
+  }
+}
+}
+
+function replaceKeySentence(data) {
+  console.log("Go");
+  for (var j = 0; j < data.length; j++) {
+  var paragraphs = document.body.getElementsByTagName('p');
+
+  for (var i = 0; i < paragraphs.length; i++) {
+    var paragraph = paragraphs[i];
+    var originalHTML = paragraph.innerHTML;
+
+    if (originalHTML.includes(data[j].key)) {
+      var highlightedHTML = originalHTML.replace(new RegExp(escapeRegExp(data[j].key), 'g'), '<mark style="background-color: #79BBFC; font-size: 18px">$&</mark>');
+      paragraph.innerHTML = highlightedHTML;
+ 
     }
   }
 }
