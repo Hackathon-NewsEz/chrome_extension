@@ -49,7 +49,7 @@ function WordsPopup() {
 
     return (
       <w.RootLayout>
-        <span className='header'>어려운 문장을 ‘노란색’, 핵심 문장을 ‘초록색’으로 표시 하였어요! 어려운 문장을 클릭하여 쉬운 표현을 확인해보세요!</span>
+        <span className='header'>어려운 문장을 ‘노란색’, 핵심 문장을 ‘파란색’으로 하이라이트 하였어요! 어려운 문장을 클릭하여 쉬운 표현을 확인해보세요!</span>
         <hr className='line'/>
         <span className='header'>해당 뉴스에서 이해하기 어려운 단어가 있다면 NewsEz에게 알려주세요!</span>
         <span className='graytext'>NewsEz의 서비스 개선에 큰 도움이 됩니다</span>
