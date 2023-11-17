@@ -4,21 +4,22 @@
 const currentURL = window.location.href;
 console.log(currentURL);
 
-fetch('http://localhost:4000/key_testing')
-.then(response => response.json())
-.then(data => {
-  
-  replaceKeySentence(data);
-  
-  fetch('http://localhost:4000/difficulty_testing')
-  .then(response => response.json())
-  .then(data => {
-
-    replaceSentence(data);
-    // 데이터를 성공적으로 변환했다면 background script로 메시지 전송
-    chrome.runtime.sendMessage({type: 'dataReceived', message: '성공'});
-  })
-  .catch(error => console.error(error));
+//서버에 api 요청
+Promise.all([
+  fetch('http://localhost:4000/key_testing_2')
+    .then(response => response.json())
+    .then(data => {
+      replaceKeySentence(data);
+    }),
+  fetch('http://localhost:4000/difficulty_testing_2')
+    .then(response => response.json())
+    .then(data => {
+      replaceSentence(data);
+    })
+])
+.then(() => {
+  // 두 API 호출이 모두 성공했을 때 메시지 전송
+  chrome.runtime.sendMessage({type: 'dataReceived', message: '성공'});
 })
 .catch(error => console.error(error));
 
@@ -28,46 +29,76 @@ let activePopup = null; // 활성 팝업을 추적하기 위한 변수
 
 
 function replaceSentence(data) {
-  console.log("Go");
 
-  for (var j = 0; j < data.length; j++) {
-  var paragraphs = document.body.getElementsByTagName('p');
+  var article = document.getElementById('dic_area');
+  var originalHTML = article.innerHTML;
+  var originalText = article.innerText;
 
-  for (var i = 0; i < paragraphs.length; i++) {
-    var paragraph = paragraphs[i];
-    var originalHTML = paragraph.innerHTML;
+  console.log(originalText);
+  console.log(originalHTML);
 
-    if (originalHTML.includes(data[j].difficult)) {
-      var highlightedHTML = originalHTML.replace(new RegExp(escapeRegExp(data[j].difficult), 'g'), `<span index=${j} style="background-color: #FCF779; cursor: pointer; ">$&</span>`);
-      paragraph.innerHTML = highlightedHTML;
+  for (var i = 0; i < data.length; i++) {
+    var index = originalText.indexOf(data[i].difficult);
+    console.log(index);
+    if (index !== -1) {
+      var startHTMLIndex = originalHTML.indexOf(data[i].difficult);
+      console.log(startHTMLIndex);
+      if (startHTMLIndex !== -1) {
+        originalHTML = originalHTML.substring(0, startHTMLIndex) +
+          '<span style="background-color:  #FCF779; cursor: pointer;">' +
+          originalHTML.substring(startHTMLIndex, startHTMLIndex + data[i].difficult.length) +
+          '</span>' +
+          originalHTML.substring(startHTMLIndex + data[i].difficult.length);
+      }
+    }
+  }
 
-      var highlightedSpans = paragraph.getElementsByTagName('span');
-      for (var l = 0; l < highlightedSpans.length; l++) {
-        var index = highlightedSpans[l].getAttribute('index');
-        highlightedSpans[l].addEventListener('click', createClickHandler(data[index].easy));
+article.innerHTML = originalHTML;
+
+  var highlightedSpans = article.getElementsByTagName('span'); //aritcle 태그 내의 html에서 span 태그를 모두 가져옴 
+  for (var j = 0; j < highlightedSpans.length; j++) {
+    console.log(highlightedSpans[j].innerText);
+    for (var k = 0; k < data.length; k++) {
+      if (highlightedSpans[j].innerText === data[k].difficult) { //span태그의 innerText가 어려운 문장 데이터와 같으면 클릭 이벤트 추가 
+        highlightedSpans[j].addEventListener('click', createClickHandler(data[k].easy));
       }
     }
   }
 }
-}
+
+
 
 function replaceKeySentence(data) {
   console.log("Go");
-  for (var j = 0; j < data.length; j++) {
-  var paragraphs = document.body.getElementsByTagName('p');
 
-  for (var i = 0; i < paragraphs.length; i++) {
-    var paragraph = paragraphs[i];
-    var originalHTML = paragraph.innerHTML;
+    var article = document.getElementById('dic_area');
+    var originalHTML = article.innerHTML;
+    var originalText = article.innerText;
 
-    if (originalHTML.includes(data[j].key)) {
-      var highlightedHTML = originalHTML.replace(new RegExp(escapeRegExp(data[j].key), 'g'), '<mark style="background-color: #79BBFC; font-size: 18px">$&</mark>');
-      paragraph.innerHTML = highlightedHTML;
- 
+    console.log(originalText);
+    console.log(originalHTML);
+
+    for (var i = 0; i < data.length; i++) {
+      var index = originalText.indexOf(data[i].key);
+      console.log(index);
+      if (index !== -1) {
+        var startHTMLIndex = originalHTML.indexOf(data[i].key);
+        console.log(startHTMLIndex);
+        if (startHTMLIndex !== -1) {
+          originalHTML = originalHTML.substring(0, startHTMLIndex) +
+            '<span style="background-color: #79BBFC;">' +
+            originalHTML.substring(startHTMLIndex, startHTMLIndex + data[i].key.length) +
+            '</span>' +
+            originalHTML.substring(startHTMLIndex + data[i].key.length);
+        }
+      }
     }
-  }
+
+  article.innerHTML = originalHTML;
+
 }
-}
+
+
 
 function createClickHandler(easy) {
   return function(event) {
@@ -90,31 +121,45 @@ function handleSentenceClick(easyData) {
       activePopup = null;
     }
   } else {
+
+    var css = document.createElement('style');
+    css.type = 'text/css';
+    css.innerHTML = `@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=Noto+Sans:wght@300;400&display=swap');
+                    .customLayout{
+                      border-radius: 10px;
+                      background: #F1F3F5;
+                      display: flex;
+                      flex-direction: column;
+                    }
+                    .customTitle { 
+                        font-size: 1.8rem ; 
+                        font-family: 'Noto Sans KR', sans-serif ; 
+                        font-style: normal;  
+                        font-weight: 500 ; 
+                        margin: 0.3rem ; 
+                        margin-left: 0.5rem;
+                    }
+                    .customContent{
+                      font-size: 1.5rem ; 
+                      font-family: 'Noto Sans KR', sans-serif; 
+                      font-style: normal ; 
+                      font-weight: 400 ; 
+                      margin: 0.3rem ; 
+                      margin-left: 0.5rem;
+                    }`;
+
+    // CSS 클래스 추가
+    document.head.appendChild(css);
+
     const layout = document.createElement('div');
-    layout.style.width = '630px';
-    layout.style.borderRadius = '10px';
-    layout.style.background = '#F1F3F5';
-    layout.style.display = 'flex';
-    layout.style.flexDirection = 'column';
+    layout.className = 'customLayout';
 
     const title = document.createElement('span');
-    title.style.color = '#000';
-    title.style.fontFamily = 'Noto Sans KR';
-    title.style.fontSize = '1.2rem';
-    title.style.fontStyle = 'normal';
-    title.style.fontWeight = '500';
-    title.style.lineHeight = 'normal';
-    title.style.margin = '0.3rem';
+    title.className = 'customTitle';
     title.innerText = 'NewsEz가 쉬운 표현으로 바꿔보았어요!';
 
     const content = document.createElement('span');
-    content.style.color = '#000';
-    content.style.fontFamily = 'Noto Sans KR';
-    content.style.fontSize = '1rem';
-    content.style.fontStyle = 'normal';
-    content.style.fontWeight = '400';
-    content.style.lineHeight = 'normal';
-    content.style.margin = '0.3rem';
+    content.className = 'customContent';
     content.innerText = easyData;
 
     layout.appendChild(title);
