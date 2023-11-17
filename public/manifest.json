@@ -8,7 +8,6 @@
   },
 
   "permissions": [
-    "https://news.kbs.co.kr/news/pc/view/view.do?ncd=7810836",
     "https://n.news.naver.com/*",
     "storage",
     "activeTab",
@@ -21,8 +20,7 @@
   },
   "content_scripts": [
     {
-        "matches": ["https://news.kbs.co.kr/news/pc/view/*", 
-                    "https://n.news.naver.com/*"],
+        "matches": ["https://n.news.naver.com/*"], 
         "js": ["Content.js"]
     }
 ]

@@ -2,7 +2,6 @@ import WordsPopup from './Popup/WordsPopup';
 function App() {
   
   return (
-   
     <WordsPopup/>
   );
 }
