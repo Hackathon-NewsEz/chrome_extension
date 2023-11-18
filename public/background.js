@@ -16,13 +16,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse)  => {
                 body: JSON.stringify({url: request.url})
               }
 
-            fetch('http://localhost:4000/testing1')
+            fetch('http://localhost:5000/post', data)
             .then(res => res.json())
             .then(data => {
                 console.log(data);
                 // 응답을 content script로 전송
                 summary = data.summary;
-                sendResponse({status: 'success', data: data}); // 이 부분을 추가합니다.
+        
+                let {datadiffs, datakeys, databoths} =  selectBoth(data);
+                console.log(datadiffs);
+                console.log(datakeys);
+                console.log(databoths);
+                sendResponse({status: 'success', datadiffs: datadiffs, datakeys: datakeys, databoths: databoths}); // 이 부분을 추가합니다.
             })
             .catch(error => {
                 console.log(error);
@@ -56,3 +61,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse)  => {
     }
   });
   
+  function selectBoth(data){
+
+    let difficults_new = [];
+    let dataBoths = [];
+    for (let i=0; i<data.difficults.length; i++) {
+        let found = false;
+        for (let j=0; j<data.keys.length; j++) {
+            if (data.difficults[i].difficult === data.keys[j].key) {
+                dataBoths.push({
+                    "both": data.difficults[i].difficult, 
+                    "easy": data.difficults[i].easy
+                });
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            difficults_new.push(data.difficults[i]);
+        }
+    }
+
+    data.keys = data.keys.filter(k => !dataBoths.some(b => b.both === k.key));
+
+    return {datadiffs: difficults_new, datakeys: data.keys, databoths: dataBoths};
+
+  }

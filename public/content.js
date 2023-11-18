@@ -8,13 +8,12 @@ if(currentURL){
   chrome.runtime.sendMessage({type: 'url', url: currentURL}, function(response){
 
     if(response.status == "success"){
-      console.log(response.data);
-      const data = response.data;
-      replaceSentence(data.difficults, "difficult");
-      replaceSentence(data.keys, "key");
-      replaceSentence(data.boths, "both");
-      easyPopup(data.difficults, "difficult");
-      easyPopup(data.boths,"both");
+    
+      replaceSentence(response.datadiffs, "difficult");
+      replaceSentence(response.datakeys, "key");
+      replaceSentence(response.databoths, "both");
+      easyPopup(response.datadiffs, "difficult");
+      easyPopup(response.databoths,"both");
       chrome.runtime.sendMessage({type: 'dataReceived', message: '성공'});
     }else{
       console.log(response.message);
