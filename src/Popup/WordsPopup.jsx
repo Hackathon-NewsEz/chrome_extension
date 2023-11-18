@@ -7,12 +7,14 @@ function WordsPopup() {
   const [word, setWord] = useState("");
   const [words, setWords] = useState([]);
   const [status, setStatus] = useState(false);
+  const [summary, setSummary] = useState("");
 
   useEffect(() => {
       // 배경 페이지에 데이터 요청 메시지를 보냄
     chrome.runtime.sendMessage({type: 'getData'}, (response) => {
       if(response.dataReceivedMessage === true){
         setStatus(true);
+        setSummary(response.summary);
       }
     });
   }, []);
@@ -49,7 +51,8 @@ function WordsPopup() {
 
     return (
       <w.RootLayout>
-        <span className='header'>어려운 문장을 ‘노란색’, 핵심 문장을 ‘파란색’으로 하이라이트 하였어요! 어려운 문장을 클릭하여 쉬운 표현을 확인해보세요!</span>
+        <span className='header'>NewsEz 뉴스 요약 서비스</span>
+        <span className='header' style={{fontSize: '1rem', color: '#495057'}}>{summary}</span>
         <hr className='line'/>
         <span className='header'>해당 뉴스에서 이해하기 어려운 단어가 있다면 NewsEz에게 알려주세요!</span>
         <span className='graytext'>NewsEz의 서비스 개선에 큰 도움이 됩니다</span>

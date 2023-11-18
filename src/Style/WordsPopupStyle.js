@@ -12,12 +12,12 @@ export const RootLayout = styled.div`
     .header{
         color: #000;
         font-family: Noto Sans KR;
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
         width: 90%;
-        margin: 0.8rem 0;
+        margin: 0.5rem 0;
     }
 
     .line{
@@ -27,7 +27,7 @@ export const RootLayout = styled.div`
     }
 
     .graytext{
-        color: #495057;
+        color: #495057; 
         font-family: Noto Sans KR;
         font-size: 16px;
         font-style: normal;
