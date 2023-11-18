@@ -42,6 +42,7 @@ function replaceSentence(data, type) {
   var originalHTML = article.innerHTML;
   var originalText = article.innerText;
 
+
   for (var i = 0; i < data.length; i++) {
     var index = originalText.indexOf(data[i][type]);
     console.log(index);
