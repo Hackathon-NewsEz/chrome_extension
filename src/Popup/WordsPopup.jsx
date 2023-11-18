@@ -1,4 +1,5 @@
 /* global chrome */
+//크롬 익스텐션 클릭 시 생기는 UI
 import React,{useState, useEffect} from 'react'
 import * as w from '../Style/WordsPopupStyle'
 import ClipLoader from "react-spinners/ClipLoader"; 
