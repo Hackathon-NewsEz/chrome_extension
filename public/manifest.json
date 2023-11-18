@@ -6,12 +6,22 @@
   "background": {
     "service_worker": "background.js"
   },
+
   "permissions": [
+    "https://n.news.naver.com/*",
     "storage",
     "activeTab",
-    "scripting"
+    "scripting",
+    "tabs",
+    "notifications"
   ],
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "content_scripts": [
+    {
+        "matches": ["https://n.news.naver.com/*"], 
+        "js": ["Content.js"]
+    }
+]
 }
