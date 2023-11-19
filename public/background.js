@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse)  => {
                 body: JSON.stringify({url: request.url})
               }
 
-            fetch('http://localhost:5000/post', data)
+            fetch('http://localhost:4000/testing1')
             .then(res => res.json())
             .then(data => {
                 console.log(data);
